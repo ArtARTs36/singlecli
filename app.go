@@ -24,7 +24,7 @@ type Action func(ctx *Context) error
 type cmd func(ctx context.Context) error
 
 func (a *App) RunWithGlobalArgs(ctx context.Context) {
-	a.Run(ctx, os.Args[1:])
+	a.Run(ctx, os.Args)
 }
 
 func (a *App) Run(ctx context.Context, args []string) {
