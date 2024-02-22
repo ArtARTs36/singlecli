@@ -15,12 +15,16 @@ const (
 	colorPurple
 )
 
-func Green(msg string) string {
-	return color(colorGreen) + msg + color(colorNone)
+func Green(format string, a ...any) string {
+	return color(colorGreen) + fmt.Sprintf(format, a...) + color(colorNone)
 }
 
-func Yellow(msg string) string {
-	return color(colorYellow) + msg + color(colorNone)
+func Yellow(format string, a ...any) string {
+	return color(colorYellow) + fmt.Sprintf(format, a...) + color(colorNone)
+}
+
+func Red(format string, a ...any) string {
+	return color(colorRed) + fmt.Sprintf(format, a...) + color(colorNone)
 }
 
 func color(color ConsoleColor) string {
