@@ -31,7 +31,8 @@ func (r *actionRunner) run(ctx context.Context) error {
 
 		if def.HasValuesEnum() && !def.ValueInputs(val) {
 			return fmt.Errorf(
-				"value for argument %q invalid. Available values: [%s]",
+				"value %q for argument %q invalid. Available values: [%s]",
+				val,
 				def.Name,
 				strings.Join(def.ValuesEnum, ", "),
 			)
