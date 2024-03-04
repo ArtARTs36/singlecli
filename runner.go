@@ -9,25 +9,48 @@ import (
 type actionRunner struct {
 	Action         Action
 	ArgDefinitions []*ArgDefinition
+	OptDefinitions []*OptDefinition
 	InputArgsList  []string
 }
 
 func (r *actionRunner) run(ctx context.Context) error {
+	optDefMap := make(map[string]*OptDefinition)
+	for _, def := range r.OptDefinitions {
+		optDefMap[def.Name] = def
+	}
+
 	argMap := make(map[string]string)
+	optMap := make(map[string]string)
 
-	for i, def := range r.ArgDefinitions {
-		i += 1
+	argumentsQueue := newArgQueue(r.ArgDefinitions)
 
-		argExists := i <= len(r.InputArgsList)-1
-		if !argExists || r.InputArgsList[i] == "" {
-			if def.Required {
-				return fmt.Errorf("must be set argument %q", def.Name)
+	for i := 1; i < len(r.InputArgsList); i++ {
+		val := r.InputArgsList[i]
+
+		isOpt := strings.HasPrefix(val, "--")
+
+		if isOpt {
+			if argumentsQueue.valid() {
+				required := argumentsQueue.firstRequired()
+				if required != nil {
+					return fmt.Errorf("must be set argument %q", required.Name)
+				}
+
+				argumentsQueue.clean()
 			}
+
+			optName := strings.SplitN(val, "--", 2)[1]
+			_, exists := optDefMap[optName]
+			if !exists {
+				return fmt.Errorf("option %q unknown", optName)
+			}
+
+			optMap[optName] = "_"
 
 			continue
 		}
 
-		val := r.InputArgsList[i]
+		def := argumentsQueue.pop()
 
 		if def.HasValuesEnum() && !def.ValueInputs(val) {
 			return fmt.Errorf(
@@ -41,8 +64,14 @@ func (r *actionRunner) run(ctx context.Context) error {
 		argMap[def.Name] = val
 	}
 
+	required := argumentsQueue.firstRequired()
+	if required != nil {
+		return fmt.Errorf("must be set argument %q", required.Name)
+	}
+
 	return r.Action(&Context{
 		Context: ctx,
 		Args:    argMap,
+		Opts:    optMap,
 	})
 }

@@ -9,6 +9,7 @@ import (
 type App struct {
 	BuildInfo     *BuildInfo
 	Args          []*ArgDefinition
+	Opts          []*OptDefinition
 	Action        Action
 	UsageExamples []*UsageExample
 }
@@ -42,7 +43,7 @@ func (a *App) Run(ctx context.Context, args []string) {
 
 func (a *App) findCmd(args []string) cmd {
 	if len(args) == 0 {
-		return newHelpCmd(a.Args, a.UsageExamples)
+		return newHelpCmd(a.Args, a.Opts, a.UsageExamples)
 	}
 
 	for _, arg := range args {
@@ -53,13 +54,14 @@ func (a *App) findCmd(args []string) cmd {
 		}
 
 		if arg == "--help" {
-			return newHelpCmd(a.Args, a.UsageExamples)
+			return newHelpCmd(a.Args, a.Opts, a.UsageExamples)
 		}
 	}
 
 	return (&actionRunner{
 		Action:         a.Action,
 		ArgDefinitions: a.Args,
+		OptDefinitions: a.Opts,
 		InputArgsList:  args,
 	}).run
 }
