@@ -14,6 +14,19 @@ type actionRunner struct {
 }
 
 func (r *actionRunner) run(ctx context.Context) error {
+	argMap, optMap, err := r.parseArgs()
+	if err != nil {
+		return err
+	}
+
+	return r.Action(&Context{
+		Context: ctx,
+		Args:    argMap,
+		Opts:    optMap,
+	})
+}
+
+func (r *actionRunner) parseArgs() (map[string]string, map[string]string, error) {
 	optDefMap := make(map[string]*OptDefinition)
 	for _, def := range r.OptDefinitions {
 		optDefMap[def.Name] = def
@@ -33,19 +46,31 @@ func (r *actionRunner) run(ctx context.Context) error {
 			if argumentsQueue.valid() {
 				required := argumentsQueue.firstRequired()
 				if required != nil {
-					return fmt.Errorf("must be set argument %q", required.Name)
+					return nil, nil, fmt.Errorf("must be set argument %q", required.Name)
 				}
 
 				argumentsQueue.clean()
 			}
 
-			optName := strings.SplitN(val, "--", 2)[1]
-			_, exists := optDefMap[optName]
-			if !exists {
-				return fmt.Errorf("option %q unknown", optName)
+			optParts := strings.SplitN(
+				strings.SplitN(val, "--", 2)[1],
+				"=",
+				2,
+			)
+
+			optName := optParts[0]
+			optValue := ""
+
+			if len(optParts) == 2 {
+				optValue = optParts[1]
 			}
 
-			optMap[optName] = "_"
+			_, exists := optDefMap[optName]
+			if !exists {
+				return nil, nil, fmt.Errorf("option %q unknown", optName)
+			}
+
+			optMap[optName] = optValue
 
 			continue
 		}
@@ -53,7 +78,7 @@ func (r *actionRunner) run(ctx context.Context) error {
 		def := argumentsQueue.pop()
 
 		if def.HasValuesEnum() && !def.ValueInputs(val) {
-			return fmt.Errorf(
+			return nil, nil, fmt.Errorf(
 				"value %q for argument %q invalid. Available values: [%s]",
 				val,
 				def.Name,
@@ -66,12 +91,8 @@ func (r *actionRunner) run(ctx context.Context) error {
 
 	required := argumentsQueue.firstRequired()
 	if required != nil {
-		return fmt.Errorf("must be set argument %q", required.Name)
+		return nil, nil, fmt.Errorf("must be set argument %q", required.Name)
 	}
 
-	return r.Action(&Context{
-		Context: ctx,
-		Args:    argMap,
-		Opts:    optMap,
-	})
+	return argMap, optMap, nil
 }

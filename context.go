@@ -17,3 +17,9 @@ func (c *Context) HasOpt(name string) bool {
 
 	return exists
 }
+
+func (c *Context) GetOpt(name string) (string, bool) {
+	v, exists := c.Opts[name]
+
+	return v, exists
+}
