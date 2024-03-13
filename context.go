@@ -4,8 +4,10 @@ import "context"
 
 type Context struct {
 	Context context.Context
-	Args    map[string]string
-	Opts    map[string]string
+	Output  Output
+
+	Args map[string]string
+	Opts map[string]string
 }
 
 func (c *Context) GetArg(name string) string {
