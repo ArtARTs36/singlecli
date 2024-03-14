@@ -43,7 +43,7 @@ func (a *App) Run(ctx context.Context, args []string) {
 
 func (a *App) findCmd(args []string) cmd {
 	if len(args) == 1 {
-		return newHelpCmd(a.Args, a.Opts, a.UsageExamples)
+		return newHelpCmd(a.BuildInfo.Name, a.Args, a.Opts, a.UsageExamples)
 	}
 
 	for _, arg := range args {
@@ -54,7 +54,7 @@ func (a *App) findCmd(args []string) cmd {
 		}
 
 		if arg == "--help" {
-			return newHelpCmd(a.Args, a.Opts, a.UsageExamples)
+			return newHelpCmd(a.BuildInfo.Name, a.Args, a.Opts, a.UsageExamples)
 		}
 	}
 

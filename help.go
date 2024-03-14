@@ -9,13 +9,15 @@ import (
 )
 
 type helpCmd struct {
+	Name          string
 	Args          []*ArgDefinition
 	Opts          []*OptDefinition
 	UsageExamples []*UsageExample
 }
 
-func newHelpCmd(args []*ArgDefinition, opts []*OptDefinition, usageExamples []*UsageExample) cmd {
+func newHelpCmd(name string, args []*ArgDefinition, opts []*OptDefinition, usageExamples []*UsageExample) cmd {
 	return (&helpCmd{
+		Name:          name,
 		Args:          args,
 		Opts:          opts,
 		UsageExamples: usageExamples,
@@ -23,11 +25,49 @@ func newHelpCmd(args []*ArgDefinition, opts []*OptDefinition, usageExamples []*U
 }
 
 func (c *helpCmd) run(_ context.Context) error {
-	fmt.Println(color.Yellow("Arguments"))
+	signature := []string{
+		c.Name,
+	}
+
+	if len(c.Args) > 0 {
+		signature = append(signature, " ")
+
+		for i, arg := range c.Args {
+			signature = append(signature, arg.Name)
+
+			if i != len(c.Args) {
+				signature = append(signature, " ")
+			}
+		}
+	}
+
+	if len(c.Opts) > 0 {
+		for i, opt := range c.Opts {
+			if opt.WithValue {
+				signature = append(signature, fmt.Sprintf("[--%s=<value>]", opt.Name))
+			} else {
+				signature = append(signature, fmt.Sprintf("[--%s]", opt.Name))
+			}
+
+			if i < len(c.Opts)-1 {
+				signature = append(signature, " ")
+			}
+		}
+	}
+
+	fmt.Println(color.Yellow("Usage"))
+
+	fmt.Printf("  %s\n", strings.Join(signature, ""))
+
+	if len(c.Args) > 0 || len(c.Opts) > 0 {
+		fmt.Println()
+	}
 
 	leftOffset := c.findLeftOffset()
 
 	if len(c.Args) > 0 {
+		fmt.Println(color.Yellow("Arguments"))
+
 		for _, arg := range c.Args {
 			spaces := leftOffset - len(arg.Name)
 
