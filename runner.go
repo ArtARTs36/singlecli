@@ -78,6 +78,10 @@ func (r *actionRunner) parseArgs() (map[string]string, map[string]string, error)
 
 		def := argumentsQueue.pop()
 
+		if def == nil {
+			return nil, nil, fmt.Errorf("unknown arg with value %q", val)
+		}
+
 		if def.HasValuesEnum() && !def.ValueInputs(val) {
 			return nil, nil, fmt.Errorf(
 				"value %q for argument %q invalid. Available values: [%s]",
