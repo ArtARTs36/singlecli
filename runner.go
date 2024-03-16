@@ -79,6 +79,10 @@ func (r *actionRunner) parseArgs() (map[string]string, map[string]string, error)
 		def := argumentsQueue.pop()
 
 		if def == nil {
+			if val == "" {
+				continue
+			}
+
 			return nil, nil, fmt.Errorf("unknown arg with value %q", val)
 		}
 
