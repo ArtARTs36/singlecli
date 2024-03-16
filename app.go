@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strings"
 )
 
 type App struct {
@@ -15,9 +16,10 @@ type App struct {
 }
 
 type BuildInfo struct {
-	Name      string
-	Version   string
-	BuildDate string
+	Name        string
+	Description string
+	Version     string
+	BuildDate   string
 }
 
 type Action func(ctx *Context) error
@@ -51,6 +53,10 @@ func (a *App) findCmd(args []string) cmd {
 			return (&versionCmd{
 				BuildInfo: a.BuildInfo,
 			}).Run
+		}
+
+		if arg == "--singlecli-codegen-ga" || strings.HasSuffix(arg, "--singlecli-codegen-ga=") {
+			return newCodegenGACmd(a)
 		}
 
 		if arg == "--help" {
