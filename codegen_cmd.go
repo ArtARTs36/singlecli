@@ -3,10 +3,10 @@ package cli
 import (
 	"context"
 	"fmt"
-	"os"
-
 	orderedmap "github.com/wk8/go-ordered-map/v2"
 	"gopkg.in/yaml.v3"
+	"os"
+	"strings"
 )
 
 type CodegenFile struct {
@@ -23,10 +23,11 @@ type githubAction struct {
 		Color string `yaml:"color,omitempty"`
 	} `yaml:"branding,omitempty"`
 	Runs struct {
-		Using      string   `yaml:"using"`
-		Image      string   `yaml:"image"`
-		Entrypoint string   `yaml:"entrypoint,omitempty"`
-		Args       []string `yaml:"args,omitempty"`
+		Using      string              `yaml:"using,omitempty"`
+		Image      string              `yaml:"image,omitempty"`
+		Entrypoint string              `yaml:"entrypoint,omitempty"`
+		Args       []string            `yaml:"args,omitempty"`
+		Steps      []*githubActionStep `yaml:"steps,omitempty"`
 	} `yaml:"runs"`
 }
 
@@ -36,17 +37,30 @@ type githubActionInput struct {
 	Default     string `yaml:"default,omitempty"`
 }
 
-type codegenCmd struct {
+type githubActionStep struct {
+	Name             string                                      `yaml:"name"`
+	ID               string                                      `yaml:"id,omitempty"`
+	If               string                                      `yaml:"if,omitempty"`
+	Run              string                                      `yaml:"run,omitempty"`
+	Shell            string                                      `yaml:"shell,omitempty"`
+	Uses             string                                      `yaml:"uses,omitempty"`
+	With             map[string]string                           `yaml:"with,omitempty"`
+	ContinueOnError  interface{}                                 `yaml:"continue-on-error,omitempty"`
+	WorkingDirectory interface{}                                 `yaml:"working-directory,omitempty"`
+	Env              *orderedmap.OrderedMap[string, interface{}] `yaml:"env,omitempty"`
+}
+
+type codegenGaCmd struct {
 	app *App
 }
 
 func newCodegenGACmd(app *App) cmd {
-	return (&codegenCmd{
+	return (&codegenGaCmd{
 		app: app,
 	}).run
 }
 
-func (c *codegenCmd) run(_ context.Context) error {
+func (c *codegenGaCmd) run(_ context.Context) error {
 	contentBytes, err := os.ReadFile("action.yaml")
 	var content *githubAction
 	if err == nil {
@@ -71,7 +85,7 @@ func (c *codegenCmd) run(_ context.Context) error {
 	return nil
 }
 
-func (c *codegenCmd) regenCode(
+func (c *codegenGaCmd) regenCode(
 	content *githubAction,
 ) *githubAction {
 	if len(c.app.Args) == 0 && len(c.app.Opts) == 0 {
@@ -110,7 +124,25 @@ func (c *codegenCmd) regenCode(
 	}
 
 	content.Inputs = inputs
-	content.Runs.Args = runArgs
+
+	if content.Runs.Using == "docker" {
+		content.Runs.Args = runArgs
+	} else {
+		for _, step := range content.Runs.Steps {
+			if step.ID == "run-binary" {
+				if step.Env == nil {
+					step.Env = orderedmap.New[string, interface{}]()
+				}
+
+				step.Env.Set("CMD_RUN_ARGS", &yaml.Node{
+					Kind:  yaml.ScalarNode,
+					Style: yaml.DoubleQuotedStyle,
+					Value: strings.Join(runArgs, " "),
+				})
+				continue
+			}
+		}
+	}
 
 	return content
 }

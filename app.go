@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"strings"
 )
 
 type App struct {
@@ -55,7 +54,7 @@ func (a *App) findCmd(args []string) cmd {
 			}).Run
 		}
 
-		if arg == "--singlecli-codegen-ga" || strings.HasSuffix(arg, "--singlecli-codegen-ga=") {
+		if arg == "--singlecli-codegen-ga" {
 			return newCodegenGACmd(a)
 		}
 
