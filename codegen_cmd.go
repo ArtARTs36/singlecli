@@ -134,10 +134,15 @@ func (c *codegenGaCmd) regenCode(
 					step.Env = orderedmap.New[string, interface{}]()
 				}
 
+				args := runArgs
+				for i, arg := range args {
+					args[i] = fmt.Sprintf("'%s'", arg)
+				}
+
 				step.Env.Set("CMD_RUN_ARGS", &yaml.Node{
 					Kind:  yaml.ScalarNode,
 					Style: yaml.DoubleQuotedStyle,
-					Value: strings.Join(runArgs, " "),
+					Value: strings.Join(args, " "),
 				})
 				continue
 			}
