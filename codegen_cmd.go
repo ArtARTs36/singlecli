@@ -62,7 +62,7 @@ func newCodegenGACmd(app *App) cmd {
 
 func (c *codegenGaCmd) run(_ context.Context) error {
 	contentBytes, err := os.ReadFile("action.yaml")
-	var content *githubAction
+	content := &githubAction{}
 	if err == nil {
 		err = yaml.Unmarshal(contentBytes, &content)
 		if err != nil {
