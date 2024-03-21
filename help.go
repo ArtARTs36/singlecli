@@ -89,15 +89,13 @@ func (c *helpCmd) run(_ context.Context) error {
 				valuesEnum = fmt.Sprintf(", available values: [%s]", valuesEnum)
 			}
 
-			fmt.Println(
-				fmt.Sprintf(
-					"  %s%s%s%s%s",
-					color.Green(arg.Name),
-					strings.Repeat(" ", spaces),
-					arg.Description,
-					required,
-					valuesEnum,
-				),
+			fmt.Printf(
+				"  %s%s%s%s%s\n",
+				color.Green(arg.Name),
+				strings.Repeat(" ", spaces),
+				arg.Description,
+				required,
+				valuesEnum,
 			)
 		}
 	}
@@ -111,14 +109,7 @@ func (c *helpCmd) run(_ context.Context) error {
 		for _, opt := range c.Opts {
 			spaces := leftOffset - len(opt.Name)
 
-			fmt.Println(
-				fmt.Sprintf(
-					"  %s%s%s",
-					color.Green(opt.Name),
-					strings.Repeat(" ", spaces),
-					opt.Description,
-				),
-			)
+			fmt.Printf("  %s%s%s\n", color.Green(opt.Name), strings.Repeat(" ", spaces), opt.Description)
 		}
 	}
 
@@ -131,12 +122,12 @@ func (c *helpCmd) run(_ context.Context) error {
 		for _, example := range c.UsageExamples {
 			spaces := strings.Repeat(" ", leftOffset-len(example.Command))
 
-			fmt.Println(fmt.Sprintf(
-				"  %s%s%s",
+			fmt.Printf(
+				"  %s%s%s\n",
 				color.Green(example.Command),
 				spaces,
 				example.Description,
-			))
+			)
 		}
 	}
 
@@ -144,6 +135,8 @@ func (c *helpCmd) run(_ context.Context) error {
 }
 
 func (c *helpCmd) findLeftOffset() int {
+	const minOffset = 2
+
 	maxLen := 0
 
 	for _, arg := range c.Args {
@@ -166,5 +159,5 @@ func (c *helpCmd) findLeftOffset() int {
 		}
 	}
 
-	return maxLen + 2
+	return maxLen + minOffset
 }
