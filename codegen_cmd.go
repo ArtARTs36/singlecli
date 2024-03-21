@@ -98,9 +98,12 @@ func (c *codegenGaCmd) regenCode(
 
 	for _, arg := range c.app.Args {
 		defaultVal := ""
-		oldArg := content.Inputs.Value(arg.Name)
-		if oldArg != nil && oldArg.Default != "" {
-			defaultVal = oldArg.Default
+
+		if content.Inputs != nil {
+			oldArg := content.Inputs.Value(arg.Name)
+			if oldArg != nil && oldArg.Default != "" {
+				defaultVal = oldArg.Default
+			}
 		}
 
 		input := &githubActionInput{
@@ -116,9 +119,12 @@ func (c *codegenGaCmd) regenCode(
 
 	for _, opt := range c.app.Opts {
 		defaultVal := ""
-		oldOpt := content.Inputs.Value(opt.Name)
-		if oldOpt != nil && oldOpt.Default != "" {
-			defaultVal = oldOpt.Default
+
+		if content.Inputs != nil {
+			oldOpt := content.Inputs.Value(opt.Name)
+			if oldOpt != nil && oldOpt.Default != "" {
+				defaultVal = oldOpt.Default
+			}
 		}
 
 		input := &githubActionInput{
