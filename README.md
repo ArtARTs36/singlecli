@@ -15,7 +15,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/artarts36/singlecli"
+	cli "github.com/artarts36/singlecli"
 )
 
 func main() {
