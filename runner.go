@@ -3,6 +3,7 @@ package cli
 import (
 	"context"
 	"fmt"
+	"runtime/debug"
 	"strings"
 )
 
@@ -13,18 +14,26 @@ type actionRunner struct {
 	InputArgsList  []string
 }
 
-func (r *actionRunner) run(ctx context.Context) error {
+func (r *actionRunner) run(ctx context.Context) (err error) {
 	argMap, optMap, err := r.parseArgs()
 	if err != nil {
 		return err
 	}
 
-	return r.Action(&Context{
+	defer func() {
+		if r := recover(); r != nil {
+			err = fmt.Errorf("application panicked: %v: %s", r, debug.Stack())
+		}
+	}()
+
+	err = r.Action(&Context{
 		Context: ctx,
 		Output:  &output{},
 		Args:    argMap,
 		Opts:    optMap,
 	})
+
+	return
 }
 
 func (r *actionRunner) parseArgs() (map[string]string, map[string]string, error) {

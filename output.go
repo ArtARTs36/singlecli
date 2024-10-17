@@ -2,11 +2,13 @@ package cli
 
 import (
 	"fmt"
+	"github.com/artarts36/singlecli/color"
 	"strings"
 )
 
 type Output interface {
 	PrintMarkdownTable(headers []string, rows [][]string)
+	PrintColoredBlock(color color.ConsoleColor, text string)
 }
 
 type output struct {
@@ -73,4 +75,8 @@ func (output) PrintMarkdownTable(headers []string, rows [][]string) {
 
 		fmt.Println(strings.Join(rowString, ""))
 	}
+}
+
+func (output) PrintColoredBlock(col color.ConsoleColor, text string) {
+	fmt.Printf("\x1b[4%dm %s \x1b[0m\n", col, text)
 }

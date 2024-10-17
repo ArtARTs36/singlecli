@@ -7,8 +7,8 @@ const consoleEscape = "\x1b"
 type ConsoleColor int
 
 const (
-	colorNone ConsoleColor = iota
-	colorRed
+	None ConsoleColor = iota
+	ColorRed
 	colorGreen
 	colorYellow
 	colorBlue
@@ -16,19 +16,19 @@ const (
 )
 
 func Green(format string, a ...any) string {
-	return color(colorGreen) + fmt.Sprintf(format, a...) + color(colorNone)
+	return color(colorGreen) + fmt.Sprintf(format, a...) + color(None)
 }
 
 func Yellow(format string, a ...any) string {
-	return color(colorYellow) + fmt.Sprintf(format, a...) + color(colorNone)
+	return color(colorYellow) + fmt.Sprintf(format, a...) + color(None)
 }
 
 func Red(format string, a ...any) string {
-	return color(colorRed) + fmt.Sprintf(format, a...) + color(colorNone)
+	return color(ColorRed) + fmt.Sprintf(format, a...) + color(None)
 }
 
 func color(color ConsoleColor) string {
-	if color == colorNone {
+	if color == None {
 		return fmt.Sprintf("%s[%dm", consoleEscape, color)
 	}
 

@@ -2,7 +2,7 @@ package cli
 
 import (
 	"context"
-	"fmt"
+	"github.com/artarts36/singlecli/color"
 	"os"
 )
 
@@ -34,7 +34,7 @@ func (a *App) Run(ctx context.Context, args []string) {
 
 	err := c(ctx)
 	if err != nil {
-		fmt.Printf("action failed: %s\n", err)
+		output{}.PrintColoredBlock(color.ColorRed, err.Error())
 
 		os.Exit(1)
 	}
