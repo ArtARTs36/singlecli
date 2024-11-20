@@ -49,8 +49,8 @@ func main() {
 }
 
 func run(ctx *cli.Context) error {
-	number1, _ := strconv.Atoi(ctx.GetArg("number1"))
-	number2, _ := strconv.Atoi(ctx.GetArg("number2"))
+	number1, _ := strconv.Atoi(ctx.GetArg("num1"))
+	number2, _ := strconv.Atoi(ctx.GetArg("num2"))
 
 	fmt.Printf("%d + %d = %d", number1, number2, number1 + number2)
 
