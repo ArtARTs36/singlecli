@@ -115,5 +115,7 @@ jobs:
 ```
 
 ## Application examples
-* [regexlint](https://github.com/ArtARTs36/regexlint)
-* [db-exporter](https://github.com/ArtARTs36/db-exporter)
+* [regexlint - console application for regex validation](https://github.com/ArtARTs36/regexlint)
+* [db-exporter - console application for export db schema and data to formats](https://github.com/ArtARTs36/db-exporter)
+* [gomodchanger - console tool for changing go module path and imports in code files](https://github.com/ArtARTs36/gomodchanger)
+* [telgram-action - action for sending messages to telegram](https://github.com/ArtARTs36/telegram-action)
