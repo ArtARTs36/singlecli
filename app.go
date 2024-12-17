@@ -43,7 +43,7 @@ func (a *App) Run(ctx context.Context, args []string) {
 }
 
 func (a *App) findCmd(args []string) cmd {
-	if len(args) == 1 && len(a.Args) > 0 {
+	if len(args) == 1 && (len(a.Args) > 0 && a.Args[0].Required) {
 		return newHelpCmd(a.BuildInfo.Name, a.Args, a.Opts, a.UsageExamples)
 	}
 
