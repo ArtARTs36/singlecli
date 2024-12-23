@@ -34,7 +34,7 @@ func (a *App) Run(ctx context.Context, args []string) {
 
 	err := c(ctx)
 	if err != nil {
-		output{}.PrintColoredBlock(color.ColorRed, err.Error())
+		output{}.PrintColoredBlock(color.Red, err.Error())
 
 		os.Exit(1)
 	}

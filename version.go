@@ -14,8 +14,8 @@ type versionCmd struct {
 func (c *versionCmd) Run(_ context.Context) error {
 	fmt.Printf(
 		"%s version %s %s\n",
-		color.Green(c.Name),
-		color.Yellow(c.Version),
+		color.Greenf(c.Name),
+		color.Yellowf(c.Version),
 		c.BuildDate,
 	)
 

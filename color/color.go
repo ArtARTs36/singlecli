@@ -8,23 +8,23 @@ type ConsoleColor int
 
 const (
 	None ConsoleColor = iota
-	ColorRed
-	colorGreen
-	colorYellow
-	colorBlue
-	colorPurple
+	Red
+	Green
+	Yellow
+	Blue
+	Purple
 )
 
-func Green(format string, a ...any) string {
-	return color(colorGreen) + fmt.Sprintf(format, a...) + color(None)
+func Greenf(format string, a ...any) string {
+	return color(Green) + fmt.Sprintf(format, a...) + color(None)
 }
 
-func Yellow(format string, a ...any) string {
-	return color(colorYellow) + fmt.Sprintf(format, a...) + color(None)
+func Yellowf(format string, a ...any) string {
+	return color(Yellow) + fmt.Sprintf(format, a...) + color(None)
 }
 
-func Red(format string, a ...any) string {
-	return color(ColorRed) + fmt.Sprintf(format, a...) + color(None)
+func Redf(format string, a ...any) string {
+	return color(Red) + fmt.Sprintf(format, a...) + color(None)
 }
 
 func color(color ConsoleColor) string {

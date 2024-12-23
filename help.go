@@ -55,7 +55,7 @@ func (c *helpCmd) run(_ context.Context) error {
 		}
 	}
 
-	fmt.Println(color.Yellow("Usage"))
+	fmt.Println(color.Yellowf("Usage"))
 
 	fmt.Printf("  %s\n", strings.Join(signature, ""))
 
@@ -66,7 +66,7 @@ func (c *helpCmd) run(_ context.Context) error {
 	leftOffset := c.findLeftOffset()
 
 	if len(c.Args) > 0 {
-		fmt.Println(color.Yellow("Arguments"))
+		fmt.Println(color.Yellowf("Arguments"))
 
 		for _, arg := range c.Args {
 			spaces := leftOffset - len(arg.Name)
@@ -91,7 +91,7 @@ func (c *helpCmd) run(_ context.Context) error {
 
 			fmt.Printf(
 				"  %s%s%s%s%s\n",
-				color.Green(arg.Name),
+				color.Greenf(arg.Name),
 				strings.Repeat(" ", spaces),
 				arg.Description,
 				required,
@@ -104,12 +104,12 @@ func (c *helpCmd) run(_ context.Context) error {
 		if len(c.Args) > 0 {
 			fmt.Println()
 		}
-		fmt.Println(color.Yellow("Options"))
+		fmt.Println(color.Yellowf("Options"))
 
 		for _, opt := range c.Opts {
 			spaces := leftOffset - len(opt.Name)
 
-			fmt.Printf("  %s%s%s\n", color.Green(opt.Name), strings.Repeat(" ", spaces), opt.Description)
+			fmt.Printf("  %s%s%s\n", color.Greenf(opt.Name), strings.Repeat(" ", spaces), opt.Description)
 		}
 	}
 
@@ -117,14 +117,14 @@ func (c *helpCmd) run(_ context.Context) error {
 		if len(c.Args) > 0 || len(c.Opts) > 0 {
 			fmt.Println()
 		}
-		fmt.Println(color.Yellow("Usage examples"))
+		fmt.Println(color.Yellowf("Usage examples"))
 
 		for _, example := range c.UsageExamples {
 			spaces := strings.Repeat(" ", leftOffset-len(example.Command))
 
 			fmt.Printf(
 				"  %s%s%s\n",
-				color.Green(example.Command),
+				color.Greenf(example.Command),
 				spaces,
 				example.Description,
 			)
