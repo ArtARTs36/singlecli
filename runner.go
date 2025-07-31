@@ -28,6 +28,7 @@ func (r *actionRunner) run(ctx context.Context) (err error) {
 
 	err = r.Action(&Context{
 		Context: ctx,
+		Input:   &input{},
 		Output:  &output{},
 		Args:    argMap,
 		Opts:    optMap,

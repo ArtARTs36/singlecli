@@ -4,7 +4,9 @@ import "context"
 
 type Context struct {
 	Context context.Context
-	Output  Output
+
+	Input  Input
+	Output Output
 
 	Args map[string]string
 	Opts map[string]string
