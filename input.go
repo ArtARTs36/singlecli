@@ -1,10 +1,8 @@
 package cli
 
 import (
-	"os"
-	"syscall"
-
 	"golang.org/x/term"
+	"os"
 )
 
 type Input interface {
@@ -16,10 +14,8 @@ type input struct {
 
 func (i *input) ReadPassword() (string, error) {
 	// based on https://github.com/golang/go/issues/19909
-	var fd int
-	if term.IsTerminal(syscall.Stdin) {
-		fd = syscall.Stdin
-	} else {
+	fd := int(os.Stdin.Fd())
+	if !term.IsTerminal(fd) {
 		tty, err := os.Open("/dev/tty")
 		if err != nil {
 			return "", err
